@@ -8,6 +8,7 @@ function Dashboard({ onLogout }) {
   const [modalOpen, setModalOpen] = useState(false);
   const [selectedInstance, setSelectedInstance] = useState(null);
   const [backupLoading, setBackupLoading] = useState({});
+  const [expandedInstance, setExpandedInstance] = useState(null);
 
   useEffect(() => {
     loadInstances();
@@ -78,6 +79,19 @@ function Dashboard({ onLogout }) {
     const sizes = ['B', 'KB', 'MB', 'GB', 'TB'];
     const i = Math.floor(Math.log(bytes) / Math.log(k));
     return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+  };
+
+  const toggleBackupList = (instanceId) => {
+    setExpandedInstance(expandedInstance === instanceId ? null : instanceId);
+  };
+
+  const handleDownload = async (instanceId, backupIndex, fileName) => {
+    const token = localStorage.getItem('token');
+    const baseUrl = process.env.REACT_APP_API_URL || '';
+    const url = `${baseUrl}/api/instances/${instanceId}/backups/${backupIndex}/download?token=${encodeURIComponent(token)}`;
+    
+    // Use window.open for large file downloads
+    window.open(url, '_blank');
   };
 
   if (loading) {
@@ -165,6 +179,37 @@ function Dashboard({ onLogout }) {
                 >
                   {backupLoading[instance.id] ? 'Backup läuft...' : 'Backup jetzt starten'}
                 </button>
+
+                {instance.backups && instance.backups.length > 0 && (
+                  <>
+                    <button
+                      onClick={() => toggleBackupList(instance.id)}
+                      className="btn-toggle-backups"
+                    >
+                      {expandedInstance === instance.id ? '▲ Backups ausblenden' : '▼ Backups anzeigen'}
+                    </button>
+
+                    {expandedInstance === instance.id && (
+                      <div className="backup-list">
+                        {instance.backups.map((backup, index) => (
+                          <div key={index} className="backup-item">
+                            <div className="backup-info">
+                              <span className="backup-date">{formatDate(backup.timestamp)}</span>
+                              <span className="backup-size">{formatBytes(backup.size)}</span>
+                            </div>
+                            <button
+                              onClick={() => handleDownload(instance.id, index, backup.fileName)}
+                              className="btn-download"
+                              title="Backup herunterladen"
+                            >
+                              ⬇
+                            </button>
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </>
+                )}
               </div>
             ))}
           </div>

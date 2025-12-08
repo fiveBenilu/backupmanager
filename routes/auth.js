@@ -122,7 +122,8 @@ router.post('/login', async (req, res) => {
 
 // Verify token middleware
 const verifyToken = (req, res, next) => {
-  const token = req.headers.authorization?.split(' ')[1];
+  // Check Authorization header first, then query parameter (for downloads)
+  const token = req.headers.authorization?.split(' ')[1] || req.query.token;
 
   if (!token) {
     return res.status(401).json({ error: 'No token provided' });

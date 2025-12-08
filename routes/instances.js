@@ -180,4 +180,42 @@ router.post('/:id/backup', verifyToken, async (req, res) => {
   }
 });
 
+// Download backup
+router.get('/:id/backups/:backupIndex/download', verifyToken, async (req, res) => {
+  try {
+    const instances = fs.readJsonSync(instancesFile);
+    const instance = instances.find(i => i.id === req.params.id);
+
+    if (!instance) {
+      return res.status(404).json({ error: 'Instance not found' });
+    }
+
+    const backupIndex = parseInt(req.params.backupIndex);
+    
+    if (!instance.backups || backupIndex < 0 || backupIndex >= instance.backups.length) {
+      return res.status(404).json({ error: 'Backup not found' });
+    }
+
+    const backup = instance.backups[backupIndex];
+    
+    // Check if file exists
+    if (!fs.existsSync(backup.filePath)) {
+      return res.status(404).json({ error: 'Backup file not found on disk' });
+    }
+
+    // Send file for download
+    res.download(backup.filePath, backup.fileName, (err) => {
+      if (err) {
+        console.error('Error downloading backup:', err);
+        if (!res.headersSent) {
+          res.status(500).json({ error: 'Error downloading backup' });
+        }
+      }
+    });
+  } catch (error) {
+    console.error('Error downloading backup:', error);
+    res.status(500).json({ error: 'Server error' });
+  }
+});
+
 module.exports = router;
