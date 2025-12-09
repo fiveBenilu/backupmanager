@@ -1,95 +1,107 @@
-# MC Backup Manager
+# Server Management Tool
 
-Ein moderner Backup-Management-Service mit Weboberfläche für automatische Datensicherungen.
+A modern server management tool with web interface for backups, service monitoring, and hardware monitoring.
 
 ## Features
 
-- 🎨 Moderne, minimalistische Weboberfläche (dunkel, grau)
-- 🔐 Sichere Authentifizierung mit JWT
-- 📦 Automatische ZIP-Backups mit konfigurierbaren Intervallen
-- ⏰ Integrierter Scheduler (stündlich, täglich, wöchentlich)
-- 🗂️ Automatische Verwaltung alter Backups (1-5 Backups aufbewahren)
-- 🚀 Erstmalige Einrichtung mit Admin-Account
-- 📊 Übersichtliches Dashboard mit allen Backup-Instanzen
-- ⚙️ Einfache Verwaltung von Backup-Konfigurationen
+- 🎨 Modern, minimalist web interface (dark, gray)
+- 🔐 Secure authentication with JWT
+- 📦 **Backup Management**
+  - Automatic ZIP backups with configurable intervals
+  - Built-in scheduler (hourly, daily, weekly)
+  - Automatic management of old backups (keep 1-5 backups)
+  - Download function for stored backups
+- 🔧 **Service Monitoring**
+  - Monitor all custom systemctl services
+  - Real-time status (active, inactive, error)
+  - Service status history over time
+  - Automatic filtering of standard services
+- 💻 **Hardware Monitoring**
+  - CPU usage in percent with live chart
+  - RAM usage in GB with history
+  - Disk space overview
+  - Network usage (download/upload) in real-time
+  - Historical data over 10 minutes
+- 📊 Tab-based dashboard for clear navigation
+- ⚙️ Easy management of all functions
 
-## Voraussetzungen
+## Prerequisites
 
-- Node.js (v14 oder höher)
-- npm oder yarn
+- Node.js (v14 or higher)
+- npm or yarn
 
 ## Installation
 
-### 1. Node.js installieren (falls nicht vorhanden)
+### 1. Install Node.js (if not already installed)
 
 ```bash
-# Für Debian/Ubuntu/Raspberry Pi OS
+# For Debian/Ubuntu/Raspberry Pi OS
 curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
 sudo apt-get install -y nodejs
 ```
 
-### 2. Abhängigkeiten installieren
+### 2. Install dependencies
 
 ```bash
 cd /opt/mcbackupmanager
 npm run install-all
 ```
 
-Dies installiert sowohl die Backend- als auch Frontend-Abhängigkeiten.
+This installs both backend and frontend dependencies.
 
-## Konfiguration
+## Configuration
 
-1. Bearbeiten Sie die `.env` Datei:
+1. Edit the `.env` file:
 
 ```bash
 nano .env
 ```
 
-Wichtige Einstellungen:
-- `PORT`: Port für den Backend-Server (Standard: 3001)
-- `JWT_SECRET`: Ändern Sie dies zu einem sicheren, zufälligen String
-- `NODE_ENV`: production oder development
+Important settings:
+- `PORT`: Port for the backend server (default: 3001)
+- `JWT_SECRET`: Change this to a secure, random string
+- `NODE_ENV`: production or development
 
-## Verwendung
+## Usage
 
-### Development-Modus
+### Development Mode
 
-Terminal 1 - Backend starten:
+Terminal 1 - Start backend:
 ```bash
 cd /opt/mcbackupmanager
 npm run dev
 ```
 
-Terminal 2 - Frontend starten:
+Terminal 2 - Start frontend:
 ```bash
 cd /opt/mcbackupmanager
 npm run client
 ```
 
-Das Frontend läuft auf http://localhost:3000
+The frontend runs on http://localhost:3000
 
-### Production-Modus
+### Production Mode
 
-1. Frontend bauen:
+1. Build frontend:
 ```bash
 npm run build
 ```
 
-2. Server starten:
+2. Start server:
 ```bash
 npm start
 ```
 
-Der Server läuft auf http://localhost:3001
+The server runs on http://localhost:3001
 
-### Mit systemd als Service (Empfohlen für Production)
+### With systemd as Service (Recommended for Production)
 
-1. Service-Datei erstellen:
+1. Create service file:
 ```bash
 sudo nano /etc/systemd/system/mcbackupmanager.service
 ```
 
-2. Folgenden Inhalt einfügen:
+2. Insert the following content:
 ```ini
 [Unit]
 Description=MC Backup Manager
@@ -108,7 +120,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-3. Service aktivieren und starten:
+3. Enable and start service:
 ```bash
 sudo systemctl daemon-reload
 sudo systemctl enable mcbackupmanager
@@ -116,91 +128,91 @@ sudo systemctl start mcbackupmanager
 sudo systemctl status mcbackupmanager
 ```
 
-## Erstmalige Einrichtung
+## Initial Setup
 
-1. Öffnen Sie die Weboberfläche im Browser
-2. Sie werden automatisch zur Einrichtungsseite weitergeleitet
-3. Erstellen Sie Ihren Administrator-Account
-4. Nach erfolgreicher Registrierung werden Sie zum Dashboard weitergeleitet
+1. Open the web interface in your browser
+2. You will be automatically redirected to the setup page
+3. Create your administrator account
+4. After successful registration you will be redirected to the dashboard
 
-## Backup-Instanzen verwalten
+## Managing Backup Instances
 
-### Neue Instanz anlegen
+### Create New Instance
 
-1. Klicken Sie auf das **+** Symbol oben rechts
-2. Füllen Sie die Felder aus:
-   - **Name**: Beschreibender Name für die Instanz
-   - **Quellpfad**: Der Ordner, der gesichert werden soll
-   - **Zielpfad**: Wo die ZIP-Backups gespeichert werden
-   - **Intervall**: Wie oft Backups erstellt werden (stündlich/täglich/wöchentlich)
-   - **Max. Backups**: Wie viele Backups aufbewahrt werden (1-5)
-3. Klicken Sie auf **Speichern**
+1. Click the **+** symbol in the top right
+2. Fill out the fields:
+   - **Name**: Descriptive name for the instance
+   - **Source Path**: The folder to be backed up
+   - **Target Path**: Where the ZIP backups will be stored
+   - **Interval**: How often backups are created (hourly/daily/weekly)
+   - **Max. Backups**: How many backups to keep (1-5)
+3. Click **Save**
 
-### Instanz bearbeiten
+### Edit Instance
 
-1. Klicken Sie auf das **⚙** Symbol in der gewünschten Instanz-Karte
-2. Bearbeiten Sie die Einstellungen
-3. Klicken Sie auf **Speichern** oder **Instanz löschen**
+1. Click the **⚙** symbol in the desired instance card
+2. Edit the settings
+3. Click **Save** or **Delete Instance**
 
-### Manuelles Backup
+### Manual Backup
 
-Klicken Sie auf **Backup jetzt starten** in der Instanz-Karte, um sofort ein Backup zu erstellen.
+Click **Start Backup Now** in the instance card to create a backup immediately.
 
-## Backup-Intervalle
+## Backup Intervals
 
-- **Stündlich**: Jeden Stunde zur vollen Stunde
-- **Täglich**: Jeden Tag um 2:00 Uhr nachts
-- **Wöchentlich**: Jeden Sonntag um 2:00 Uhr nachts
+- **Hourly**: Every hour on the hour
+- **Daily**: Every day at 2:00 AM
+- **Weekly**: Every Sunday at 2:00 AM
 
-## Datenstruktur
+## Data Structure
 
 ```
 /opt/mcbackupmanager/
-├── data/               # Datenbank (JSON)
-│   ├── users.json      # Benutzer
-│   ├── instances.json  # Backup-Instanzen
-│   └── settings.json   # System-Einstellungen
-├── backups/            # Standard-Backup-Verzeichnis
-├── client/             # React Frontend
-├── routes/             # API-Routen
-├── services/           # Backend-Services
-└── server.js           # Hauptserver
+├── data/               # Database (JSON)
+│   ├── users.json      # Users
+│   ├── instances.json  # Backup instances
+│   └── settings.json   # System settings
+├── backups/            # Default backup directory
+├── client/             # React frontend
+├── routes/             # API routes
+├── services/           # Backend services
+└── server.js           # Main server
 ```
 
-## Sicherheit
+## Security
 
-- Passwörter werden mit bcrypt gehasht
-- JWT-Tokens für Authentifizierung
-- Automatische Token-Validierung
-- Geschützte API-Endpunkte
+- Passwords are hashed with bcrypt
+- JWT tokens for authentication
+- Automatic token validation
+- Protected API endpoints
 
 ## Troubleshooting
 
-### Backend startet nicht
+### Backend won't start
 ```bash
-# Logs prüfen (wenn als Service)
+# Check logs (when running as service)
 sudo journalctl -u mcbackupmanager -f
 
-# Manuell starten für mehr Details
+# Start manually for more details
 cd /opt/mcbackupmanager
 node server.js
 ```
 
-### Backup schlägt fehl
-- Prüfen Sie, ob der Quellpfad existiert und lesbar ist
-- Prüfen Sie, ob der Zielpfad existiert und beschreibbar ist
-- Prüfen Sie die Server-Logs
+### Backup fails
+- Check if the source path exists and is readable
+- Check if the target path exists and is writable
+- Check the server logs
 
-### Port ist bereits belegt
-Ändern Sie den Port in der `.env` Datei:
+### Port is already in use
+Change the port in the `.env` file:
 ```
 PORT=3002
 ```
 
-## Lizenz
+## License
 
 MIT
 
 ## Support
 
-Bei Fragen oder Problemen erstellen Sie bitte ein Issue im Repository.
+For questions or problems, please create an issue in the repository.

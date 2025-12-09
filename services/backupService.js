@@ -2,6 +2,7 @@ const schedule = require('node-schedule');
 const archiver = require('archiver');
 const fs = require('fs-extra');
 const path = require('path');
+const logger = require('../config/logger');
 
 const dataDir = path.join(__dirname, '../data');
 const instancesFile = path.join(dataDir, 'instances.json');
@@ -11,7 +12,7 @@ const jobs = {};
 
 // Initialize backup service
 function initialize() {
-  console.log('Initializing backup service...');
+  logger.info('Initializing backup service...');
   loadSchedules();
 }
 
@@ -28,9 +29,9 @@ function loadSchedules() {
       scheduleBackup(instance);
     });
 
-    console.log(`Scheduled ${instances.length} backup jobs`);
+    logger.info(`Scheduled ${instances.length} backup jobs`);
   } catch (error) {
-    console.error('Error loading schedules:', error);
+    logger.error('Error loading schedules:', error);
   }
 }
 
@@ -55,14 +56,14 @@ function scheduleBackup(instance) {
 
   try {
     const job = schedule.scheduleJob(cronExpression, async () => {
-      console.log(`Running scheduled backup for instance: ${instance.name}`);
+      logger.info(`Running scheduled backup for instance: ${instance.name}`);
       await performBackup(instance);
     });
 
     jobs[instance.id] = job;
-    console.log(`Scheduled backup for ${instance.name} with interval: ${instance.interval}`);
+    logger.info(`Scheduled backup for ${instance.name} with interval: ${instance.interval}`);
   } catch (error) {
-    console.error(`Error scheduling backup for ${instance.name}:`, error);
+    logger.error(`Error scheduling backup for ${instance.name}:`, error);
   }
 }
 
@@ -70,7 +71,7 @@ function scheduleBackup(instance) {
 async function performBackup(instance) {
   return new Promise(async (resolve, reject) => {
     try {
-      console.log(`Starting backup for: ${instance.name}`);
+      logger.info(`Starting backup for: ${instance.name}`);
 
       // Ensure target directory exists
       await fs.ensureDir(instance.targetPath);
@@ -89,7 +90,7 @@ async function performBackup(instance) {
       // Handle archive events
       output.on('close', async () => {
         const backupSize = archive.pointer();
-        console.log(`Backup completed: ${backupFileName} (${formatBytes(backupSize)})`);
+        logger.info(`Backup completed: ${backupFileName} (${formatBytes(backupSize)})`);
 
         // Update instance data
         await updateInstanceAfterBackup(instance, {
@@ -103,7 +104,7 @@ async function performBackup(instance) {
       });
 
       archive.on('error', (err) => {
-        console.error(`Backup error for ${instance.name}:`, err);
+        logger.error(`Backup error for ${instance.name}:`, err);
         reject(err);
       });
 
@@ -128,7 +129,7 @@ async function performBackup(instance) {
             
             const shouldExclude = excludePatterns.some(pattern => pattern.test(entry.name));
             if (shouldExclude) {
-              console.log(`Skipping file: ${entry.name}`);
+              logger.debug(`Skipping file: ${entry.name}`);
               return false;
             }
             return entry;
@@ -144,7 +145,7 @@ async function performBackup(instance) {
       await archive.finalize();
 
     } catch (error) {
-      console.error(`Error performing backup for ${instance.name}:`, error);
+      logger.error(`Error performing backup for ${instance.name}:`, error);
       reject(error);
     }
   });
@@ -182,10 +183,10 @@ async function updateInstanceAfterBackup(instance, backupInfo) {
         try {
           if (fs.existsSync(oldBackup.filePath)) {
             await fs.remove(oldBackup.filePath);
-            console.log(`Deleted old backup: ${oldBackup.fileName}`);
+            logger.info(`Deleted old backup: ${oldBackup.fileName}`);
           }
         } catch (error) {
-          console.error(`Error deleting old backup ${oldBackup.fileName}:`, error);
+          logger.error(`Error deleting old backup ${oldBackup.fileName}:`, error);
         }
       }
     }
@@ -194,13 +195,13 @@ async function updateInstanceAfterBackup(instance, backupInfo) {
     fs.writeJsonSync(instancesFile, instances, { spaces: 2 });
 
   } catch (error) {
-    console.error('Error updating instance after backup:', error);
+    logger.error('Error updating instance after backup:', error);
   }
 }
 
 // Reload schedules
 function reloadSchedules() {
-  console.log('Reloading backup schedules...');
+  logger.info('Reloading backup schedules...');
   loadSchedules();
 }
 
