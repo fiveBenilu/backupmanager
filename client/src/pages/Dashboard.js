@@ -3,6 +3,7 @@ import api from '../services/api';
 import InstanceModal from '../components/InstanceModal';
 import ServicesTab from '../components/ServicesTab';
 import HardwareTab from '../components/HardwareTab';
+import UptimeTab from '../components/UptimeTab';
 
 function Dashboard({ onLogout }) {
   const [activeTab, setActiveTab] = useState('backups');
@@ -58,14 +59,14 @@ function Dashboard({ onLogout }) {
       await loadInstances();
     } catch (error) {
       console.error('Error performing backup:', error);
-      alert('Backup fehlgeschlagen: ' + (error.response?.data?.error || error.message));
+      alert('Backup failed: ' + (error.response?.data?.error || error.message));
     } finally {
       setBackupLoading({ ...backupLoading, [instanceId]: false });
     }
   };
 
   const formatDate = (dateString) => {
-    if (!dateString) return 'Noch nie';
+    if (!dateString) return 'Never';
     const date = new Date(dateString);
     return date.toLocaleDateString('de-DE', {
       day: '2-digit',
@@ -110,7 +111,7 @@ function Dashboard({ onLogout }) {
       <div className="dashboard-header">
         <h1>Server Management</h1>
         <button onClick={onLogout} className="btn-logout">
-          Abmelden
+          Logout
         </button>
       </div>
 
@@ -120,6 +121,12 @@ function Dashboard({ onLogout }) {
           onClick={() => setActiveTab('backups')}
         >
           Backups
+        </button>
+        <button 
+          className={`tab ${activeTab === 'uptime' ? 'active' : ''}`}
+          onClick={() => setActiveTab('uptime')}
+        >
+          Uptime
         </button>
         <button 
           className={`tab ${activeTab === 'services' ? 'active' : ''}`}
@@ -139,16 +146,16 @@ function Dashboard({ onLogout }) {
         {activeTab === 'backups' && (
           <>
             <div className="instances-header">
-              <h2>Backup-Instanzen</h2>
-              <button onClick={handleAddInstance} className="btn-add" title="Neue Instanz">
+              <h2>Backup Instances</h2>
+              <button onClick={handleAddInstance} className="btn-add" title="New Instance">
                 +
               </button>
             </div>
 
         {instances.length === 0 ? (
           <div className="empty-state">
-            <p>Keine Backup-Instanzen vorhanden</p>
-            <p style={{ fontSize: '14px' }}>Klicken Sie auf + um eine neue Instanz anzulegen</p>
+            <p>No backup instances available</p>
+            <p style={{ fontSize: '14px' }}>Click + to create a new instance</p>
           </div>
         ) : (
           <div className="instances-grid">
@@ -159,7 +166,7 @@ function Dashboard({ onLogout }) {
                   <button
                     onClick={() => handleEditInstance(instance)}
                     className="btn-settings"
-                    title="Einstellungen"
+                    title="Settings"
                   >
                     ⚙
                   </button>
@@ -167,11 +174,11 @@ function Dashboard({ onLogout }) {
 
                 <div className="instance-info">
                   <div className="info-row">
-                    <span className="info-label">Instanz-ID:</span>
+                    <span className="info-label">Instance ID:</span>
                     <span className="info-value">{instance.id}</span>
                   </div>
                   <div className="info-row">
-                    <span className="info-label">Verzeichnis:</span>
+                    <span className="info-label">Directory:</span>
                     <span className="info-value" title={instance.sourcePath}>
                       {instance.sourcePath.length > 25
                         ? '...' + instance.sourcePath.slice(-25)
@@ -179,15 +186,15 @@ function Dashboard({ onLogout }) {
                     </span>
                   </div>
                   <div className="info-row">
-                    <span className="info-label">Letztes Backup:</span>
+                    <span className="info-label">Last Backup:</span>
                     <span className="info-value">{formatDate(instance.lastBackup)}</span>
                   </div>
                   <div className="info-row">
-                    <span className="info-label">Größe:</span>
+                    <span className="info-label">Size:</span>
                     <span className="info-value">{formatBytes(instance.size)}</span>
                   </div>
                   <div className="info-row">
-                    <span className="info-label">Intervall:</span>
+                    <span className="info-label">Interval:</span>
                     <span className="info-value">{instance.interval}</span>
                   </div>
                   <div className="info-row">
@@ -203,7 +210,7 @@ function Dashboard({ onLogout }) {
                   className="btn-backup"
                   disabled={backupLoading[instance.id]}
                 >
-                  {backupLoading[instance.id] ? 'Backup läuft...' : 'Backup jetzt starten'}
+                  {backupLoading[instance.id] ? 'Backup running...' : 'Start Backup Now'}
                 </button>
 
                 {instance.backups && instance.backups.length > 0 && (
@@ -212,7 +219,7 @@ function Dashboard({ onLogout }) {
                       onClick={() => toggleBackupList(instance.id)}
                       className="btn-toggle-backups"
                     >
-                      {expandedInstance === instance.id ? '▲ Backups ausblenden' : '▼ Backups anzeigen'}
+                      {expandedInstance === instance.id ? '▲ Hide Backups' : '▼ Show Backups'}
                     </button>
 
                     {expandedInstance === instance.id && (
@@ -226,7 +233,7 @@ function Dashboard({ onLogout }) {
                             <button
                               onClick={() => handleDownload(instance.id, index, backup.fileName)}
                               className="btn-download"
-                              title="Backup herunterladen"
+                              title="Download Backup"
                             >
                               ⬇
                             </button>
@@ -242,6 +249,8 @@ function Dashboard({ onLogout }) {
         )}
           </>
         )}
+
+        {activeTab === 'uptime' && <UptimeTab />}
 
         {activeTab === 'services' && <ServicesTab />}
 

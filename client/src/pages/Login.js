@@ -12,7 +12,7 @@ function Login({ onLogin }) {
     setError('');
 
     if (!username || !password) {
-      setError('Bitte alle Felder ausfüllen');
+      setError('Please fill in all fields');
       return;
     }
 
@@ -27,7 +27,7 @@ function Login({ onLogin }) {
       localStorage.setItem('token', response.data.token);
       onLogin();
     } catch (err) {
-      setError(err.response?.data?.error || 'Login fehlgeschlagen');
+      setError(err.response?.data?.error || 'Login failed');
     } finally {
       setLoading(false);
     }
@@ -36,14 +36,14 @@ function Login({ onLogin }) {
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h1>Anmelden</h1>
-        <p>Melden Sie sich mit Ihrem Account an</p>
+        <h1>Login</h1>
+        <p>Sign in with your account</p>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Benutzername</label>
+            <label>Username</label>
             <input
               type="text"
               value={username}
@@ -54,7 +54,7 @@ function Login({ onLogin }) {
           </div>
 
           <div className="form-group">
-            <label>Passwort</label>
+            <label>Password</label>
             <input
               type="password"
               value={password}
@@ -64,7 +64,7 @@ function Login({ onLogin }) {
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Anmelden...' : 'Anmelden'}
+            {loading ? 'Logging in...' : 'Login'}
           </button>
         </form>
       </div>

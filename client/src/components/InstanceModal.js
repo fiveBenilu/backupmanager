@@ -35,7 +35,7 @@ function InstanceModal({ instance, onClose, onSave }) {
     setError('');
 
     if (!formData.name || !formData.sourcePath || !formData.targetPath) {
-      setError('Bitte alle Felder ausfüllen');
+      setError('Please fill in all fields');
       return;
     }
 
@@ -49,7 +49,7 @@ function InstanceModal({ instance, onClose, onSave }) {
       }
       onSave();
     } catch (err) {
-      setError(err.response?.data?.error || 'Speichern fehlgeschlagen');
+      setError(err.response?.data?.error || 'Save failed');
     } finally {
       setLoading(false);
     }
@@ -61,7 +61,7 @@ function InstanceModal({ instance, onClose, onSave }) {
       await api.delete(`/api/instances/${instance.id}`);
       onSave();
     } catch (err) {
-      setError(err.response?.data?.error || 'Löschen fehlgeschlagen');
+      setError(err.response?.data?.error || 'Delete failed');
       setLoading(false);
     }
   };
@@ -70,7 +70,7 @@ function InstanceModal({ instance, onClose, onSave }) {
     <div className="modal-overlay" onClick={onClose}>
       <div className="modal" onClick={(e) => e.stopPropagation()}>
         <div className="modal-header">
-          <h2>{instance ? 'Instanz bearbeiten' : 'Neue Instanz'}</h2>
+          <h2>{instance ? 'Edit Instance' : 'New Instance'}</h2>
           <button onClick={onClose} className="btn-close">
             ×
           </button>
@@ -93,7 +93,7 @@ function InstanceModal({ instance, onClose, onSave }) {
             </div>
 
             <div className="form-group">
-              <label>Quellpfad</label>
+              <label>Source Path</label>
               <input
                 type="text"
                 name="sourcePath"
@@ -101,11 +101,11 @@ function InstanceModal({ instance, onClose, onSave }) {
                 onChange={handleChange}
                 placeholder="/opt/minecraft/world"
               />
-              <div className="form-hint">Der Ordner, der gesichert werden soll</div>
+              <div className="form-hint">The folder to be backed up</div>
             </div>
 
             <div className="form-group">
-              <label>Zielpfad</label>
+              <label>Target Path</label>
               <input
                 type="text"
                 name="targetPath"
@@ -113,21 +113,21 @@ function InstanceModal({ instance, onClose, onSave }) {
                 onChange={handleChange}
                 placeholder="/opt/backups/minecraft"
               />
-              <div className="form-hint">Wo die ZIP-Backups gespeichert werden</div>
+              <div className="form-hint">Where the ZIP backups will be stored</div>
             </div>
 
             <div className="form-group">
-              <label>Intervall</label>
+              <label>Interval</label>
               <select name="interval" value={formData.interval} onChange={handleChange}>
-                <option value="hourly">Stündlich</option>
-                <option value="daily">Täglich</option>
-                <option value="weekly">Wöchentlich</option>
+                <option value="hourly">Hourly</option>
+                <option value="daily">Daily</option>
+                <option value="weekly">Weekly</option>
               </select>
-              <div className="form-hint">Wie oft automatische Backups erstellt werden</div>
+              <div className="form-hint">How often automatic backups are created</div>
             </div>
 
             <div className="form-group">
-              <label>Maximale Backup-Anzahl</label>
+              <label>Maximum Backup Count</label>
               <select
                 name="maxBackups"
                 value={formData.maxBackups}
@@ -140,16 +140,16 @@ function InstanceModal({ instance, onClose, onSave }) {
                 <option value={5}>5</option>
               </select>
               <div className="form-hint">
-                Anzahl der aufbewahrten Backups, älteste werden automatisch gelöscht
+                Number of backups to keep, oldest will be deleted automatically
               </div>
             </div>
 
             <div className="modal-actions">
               <button type="button" onClick={onClose} className="btn-secondary">
-                Abbrechen
+                Cancel
               </button>
               <button type="submit" className="btn-primary" disabled={loading}>
-                {loading ? 'Speichern...' : 'Speichern'}
+                {loading ? 'Saving...' : 'Save'}
               </button>
             </div>
 
@@ -160,7 +160,7 @@ function InstanceModal({ instance, onClose, onSave }) {
                   onClick={() => setShowDeleteConfirm(true)}
                   className="btn-danger"
                 >
-                  Instanz löschen
+                  Delete Instance
                 </button>
               </div>
             )}
@@ -168,7 +168,7 @@ function InstanceModal({ instance, onClose, onSave }) {
         ) : (
           <div>
             <p style={{ color: '#e0e0e0', marginBottom: '24px' }}>
-              Möchten Sie die Instanz "{instance.name}" wirklich löschen?
+              Do you really want to delete the instance "{instance.name}"?
             </p>
             <div className="modal-actions">
               <button
@@ -176,10 +176,10 @@ function InstanceModal({ instance, onClose, onSave }) {
                 className="btn-secondary"
                 disabled={loading}
               >
-                Abbrechen
+                Cancel
               </button>
               <button onClick={handleDelete} className="btn-danger" disabled={loading}>
-                {loading ? 'Löschen...' : 'Endgültig löschen'}
+                {loading ? 'Deleting...' : 'Delete Permanently'}
               </button>
             </div>
           </div>

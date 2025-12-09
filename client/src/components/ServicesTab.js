@@ -44,6 +44,26 @@ function ServicesTab() {
     }
   };
 
+  const handleServiceAction = async (serviceName, action, event) => {
+    event.stopPropagation();
+    
+    if (!window.confirm(`Möchten Sie die Aktion "${action}" für den Service "${serviceName}" ausführen?`)) {
+      return;
+    }
+
+    try {
+      await api.post(`/api/services/${serviceName}/action`, { action });
+      // Reload services after action
+      await loadServices();
+      if (selectedService?.name === serviceName) {
+        await loadServiceHistory(serviceName);
+      }
+    } catch (error) {
+      console.error('Error executing service action:', error);
+      alert(`Fehler beim Ausführen der Aktion: ${error.response?.data?.message || error.message}`);
+    }
+  };
+
   const getStatusColor = (status) => {
     switch (status) {
       case 'active':
@@ -136,6 +156,46 @@ function ServicesTab() {
                     {getStatusText(service.status)}
                   </span>
                 </div>
+              </div>
+
+              <div className="service-actions" onClick={(e) => e.stopPropagation()}>
+                <button
+                  className="action-btn start-btn"
+                  onClick={(e) => handleServiceAction(service.name, 'start', e)}
+                  disabled={service.status === 'active'}
+                  title="Service starten"
+                >
+                  Start
+                </button>
+                <button
+                  className="action-btn stop-btn"
+                  onClick={(e) => handleServiceAction(service.name, 'stop', e)}
+                  disabled={service.status === 'inactive'}
+                  title="Service stoppen"
+                >
+                  Stop
+                </button>
+                <button
+                  className="action-btn restart-btn"
+                  onClick={(e) => handleServiceAction(service.name, 'restart', e)}
+                  title="Service neustarten"
+                >
+                  Restart
+                </button>
+                <button
+                  className="action-btn enable-btn"
+                  onClick={(e) => handleServiceAction(service.name, 'enable', e)}
+                  title="Autostart aktivieren"
+                >
+                  Enable
+                </button>
+                <button
+                  className="action-btn disable-btn"
+                  onClick={(e) => handleServiceAction(service.name, 'disable', e)}
+                  title="Autostart deaktivieren"
+                >
+                  Disable
+                </button>
               </div>
 
               {selectedService?.name === service.name && (

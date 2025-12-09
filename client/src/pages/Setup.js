@@ -13,17 +13,17 @@ function Setup({ onComplete }) {
     setError('');
 
     if (!username || !password || !confirmPassword) {
-      setError('Bitte alle Felder ausfüllen');
+      setError('Please fill in all fields');
       return;
     }
 
     if (password.length < 6) {
-      setError('Passwort muss mindestens 6 Zeichen lang sein');
+      setError('Password must be at least 6 characters long');
       return;
     }
 
     if (password !== confirmPassword) {
-      setError('Passwörter stimmen nicht überein');
+      setError('Passwords do not match');
       return;
     }
 
@@ -38,7 +38,7 @@ function Setup({ onComplete }) {
       localStorage.setItem('token', response.data.token);
       onComplete();
     } catch (err) {
-      setError(err.response?.data?.error || 'Registrierung fehlgeschlagen');
+      setError(err.response?.data?.error || 'Registration failed');
     } finally {
       setLoading(false);
     }
@@ -47,14 +47,14 @@ function Setup({ onComplete }) {
   return (
     <div className="auth-container">
       <div className="auth-box">
-        <h1>Willkommen</h1>
-        <p>Erstellen Sie Ihren Administrator-Account</p>
+        <h1>Welcome</h1>
+        <p>Create your administrator account</p>
 
         {error && <div className="error-message">{error}</div>}
 
         <form onSubmit={handleSubmit}>
           <div className="form-group">
-            <label>Benutzername</label>
+            <label>Username</label>
             <input
               type="text"
               value={username}
@@ -65,7 +65,7 @@ function Setup({ onComplete }) {
           </div>
 
           <div className="form-group">
-            <label>Passwort</label>
+            <label>Password</label>
             <input
               type="password"
               value={password}
@@ -75,7 +75,7 @@ function Setup({ onComplete }) {
           </div>
 
           <div className="form-group">
-            <label>Passwort bestätigen</label>
+            <label>Confirm Password</label>
             <input
               type="password"
               value={confirmPassword}
@@ -85,7 +85,7 @@ function Setup({ onComplete }) {
           </div>
 
           <button type="submit" className="btn-primary" disabled={loading}>
-            {loading ? 'Erstelle Account...' : 'Account erstellen'}
+            {loading ? 'Creating Account...' : 'Create Account'}
           </button>
         </form>
       </div>
