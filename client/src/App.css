@@ -139,6 +139,35 @@
   color: #e0e0e0;
 }
 
+.dashboard-tabs {
+  background: #1a1a1a;
+  border-bottom: 1px solid #2a2a2a;
+  padding: 0 32px;
+  display: flex;
+  gap: 8px;
+}
+
+.tab {
+  padding: 14px 24px;
+  background: transparent;
+  border: none;
+  border-bottom: 2px solid transparent;
+  color: #888;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+  position: relative;
+}
+
+.tab:hover {
+  color: #b0b0b0;
+}
+
+.tab.active {
+  color: #e0e0e0;
+  border-bottom-color: #e0e0e0;
+}
+
 .btn-logout {
   padding: 8px 16px;
   background: transparent;
@@ -495,3 +524,218 @@
   background: #333;
   border-color: #444;
 }
+
+/* Services Tab */
+.services-tab {
+  padding: 0;
+}
+
+.services-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.services-header h2 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.services-stats {
+  display: flex;
+  gap: 24px;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-value {
+  font-size: 24px;
+  font-weight: 600;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: #666;
+  margin-top: 4px;
+}
+
+.services-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.service-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border-color 0.2s;
+}
+
+.service-card:hover {
+  border-color: #333;
+}
+
+.service-main {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 16px 20px;
+}
+
+.service-info {
+  flex: 1;
+}
+
+.service-name {
+  font-size: 15px;
+  font-weight: 500;
+  color: #e0e0e0;
+  margin-bottom: 4px;
+}
+
+.service-description {
+  font-size: 13px;
+  color: #666;
+}
+
+.service-status {
+  display: flex;
+  align-items: center;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.service-history {
+  border-top: 1px solid #2a2a2a;
+  padding: 16px 20px;
+  background: #151515;
+}
+
+.service-history h4 {
+  font-size: 14px;
+  font-weight: 500;
+  color: #e0e0e0;
+  margin-bottom: 12px;
+}
+
+.history-timeline {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.history-entry {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 13px;
+  padding: 6px 0;
+}
+
+.history-status {
+  font-weight: 500;
+}
+
+.history-timestamp {
+  color: #666;
+}
+
+/* Hardware Tab */
+.hardware-tab {
+  padding: 0;
+}
+
+.hardware-header {
+  margin-bottom: 24px;
+}
+
+.hardware-header h2 {
+  font-size: 18px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.hardware-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.hardware-card {
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 8px;
+  padding: 20px;
+  transition: border-color 0.2s;
+}
+
+.hardware-card:hover {
+  border-color: #333;
+}
+
+.hardware-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.hardware-card-header h3 {
+  font-size: 16px;
+  font-weight: 500;
+  color: #e0e0e0;
+}
+
+.hardware-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: #4ade80;
+  text-align: right;
+}
+
+.hardware-details {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 16px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 14px;
+}
+
+.detail-row span:first-child {
+  color: #888;
+}
+
+.detail-row span:last-child {
+  color: #e0e0e0;
+  font-weight: 500;
+}
+
+.mini-chart {
+  margin-top: 16px;
+}
+
+.chart-label {
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 8px;
+}
+
+.mini-chart canvas {
+  background: #0f0f0f;
+  border-radius: 6px;
+  border: 1px solid #2a2a2a;
+}
+

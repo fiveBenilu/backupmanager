@@ -1,8 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import api from '../services/api';
 import InstanceModal from '../components/InstanceModal';
+import ServicesTab from '../components/ServicesTab';
+import HardwareTab from '../components/HardwareTab';
 
 function Dashboard({ onLogout }) {
+  const [activeTab, setActiveTab] = useState('backups');
   const [instances, setInstances] = useState([]);
   const [loading, setLoading] = useState(true);
   const [modalOpen, setModalOpen] = useState(false);
@@ -105,19 +108,42 @@ function Dashboard({ onLogout }) {
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>MC Backup Manager</h1>
+        <h1>Server Management</h1>
         <button onClick={onLogout} className="btn-logout">
           Abmelden
         </button>
       </div>
 
+      <div className="dashboard-tabs">
+        <button 
+          className={`tab ${activeTab === 'backups' ? 'active' : ''}`}
+          onClick={() => setActiveTab('backups')}
+        >
+          Backups
+        </button>
+        <button 
+          className={`tab ${activeTab === 'services' ? 'active' : ''}`}
+          onClick={() => setActiveTab('services')}
+        >
+          Services
+        </button>
+        <button 
+          className={`tab ${activeTab === 'hardware' ? 'active' : ''}`}
+          onClick={() => setActiveTab('hardware')}
+        >
+          Hardware
+        </button>
+      </div>
+
       <div className="dashboard-content">
-        <div className="instances-header">
-          <h2>Backup-Instanzen</h2>
-          <button onClick={handleAddInstance} className="btn-add" title="Neue Instanz">
-            +
-          </button>
-        </div>
+        {activeTab === 'backups' && (
+          <>
+            <div className="instances-header">
+              <h2>Backup-Instanzen</h2>
+              <button onClick={handleAddInstance} className="btn-add" title="Neue Instanz">
+                +
+              </button>
+            </div>
 
         {instances.length === 0 ? (
           <div className="empty-state">
@@ -214,6 +240,12 @@ function Dashboard({ onLogout }) {
             ))}
           </div>
         )}
+          </>
+        )}
+
+        {activeTab === 'services' && <ServicesTab />}
+
+        {activeTab === 'hardware' && <HardwareTab />}
       </div>
 
       {modalOpen && (
